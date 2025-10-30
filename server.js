@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:8083"],
+    origin: ["http://localhost:8081", "http://localhost:8082", "http://localhost:8083", "http://localhost:8084", "https://your-frontend-domain.com"],
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
@@ -32,7 +32,7 @@ app.use((req, res, next) => {
   }
 });
 
-const PORT = process.env.PORT || 8088;
+const PORT = process.env.PORT || 3000;
 const COMMENTS_FILE = path.join(__dirname, 'src', 'comments.yaml');
 
 // Ensure comments.yaml exists
@@ -153,5 +153,4 @@ io.on('connection', (socket) => {
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-
 });

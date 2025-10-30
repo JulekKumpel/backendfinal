@@ -1,0 +1,22 @@
+{
+  "name": "vra-comment-server",
+  "version": "1.0.0",
+  "description": "Comment API server for VRA news platform using YAML storage",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "js-yaml": "^4.1.0",
+    "socket.io": "^4.8.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["comments", "api", "yaml", "express"],
+  "author": "VRA",
+  "license": "MIT"
+}

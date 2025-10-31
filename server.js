@@ -32,7 +32,7 @@ app.use((req, res, next) => {
   }
 });
 
-const PORT = process.env.PORT || 8088;
+const PORT = process.env.PORT || 8080;
 const COMMENTS_FILE = path.join(__dirname, 'src', 'comments.yaml');
 
 // Ensure comments.yaml exists

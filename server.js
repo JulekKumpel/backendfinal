@@ -6,7 +6,7 @@ import path from 'path';
 
 const app = express();
 const server = http.createServer(app);
-const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ["https://beautiful-vacherin-55c050.netlify.app/", "http://localhost:8082", "http://localhost:8083", "http://localhost:8084", "https://your-frontend-domain.com", "https://vra-league.netlify.app"];
+const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ["https://beautiful-vacherin-55c050.netlify.app/", "http://localhost:8082", "http://localhost:8083", "http://localhost:8084", "https://leafy-unicorn-9fee6f.netlify.app/article/1", "https://vra-league.netlify.app"];
 
 const io = new Server(server, {
   cors: {
@@ -161,3 +161,4 @@ io.on('connection', (socket) => {
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+

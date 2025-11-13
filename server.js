@@ -6,7 +6,7 @@ import path from 'path';
 
 const app = express();
 const server = http.createServer(app);
-const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ["https://beautiful-vacherin-55c050.netlify.app/", "http://localhost:8082", "http://localhost:8083", "http://localhost:8084", "https://your-frontend-domain.com", "https://vra-league.netlify.app", "https://leafy-unicorn-9fee6f.netlify.app"];
+const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ["https://beautiful-vacherin-55c050.netlify.app/", "http://localhost:8082", "http://localhost:8083", "http://localhost:8084", "https://your-frontend-domain.com", "https://vra-league.netlify.app", "https://leafy-unicorn-9fee6f.netlify.app", "https://backendsite1-production.up.railway.app"];
 
 const io = new Server(server, {
   cors: {
@@ -19,9 +19,13 @@ const io = new Server(server, {
 
 // Add CORS headers for all routes
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+  }
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
   if (req.method === 'OPTIONS') {
     res.sendStatus(200);
   } else {

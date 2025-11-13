@@ -64,8 +64,10 @@ app.use(express.json());
 // API endpoint to get comments
 app.get('/api/comments/:articleId', async (req, res) => {
   try {
+    console.log(`Getting comments for article: ${req.params.articleId}`);
     const { articleId } = req.params;
     const comments = await readComments(articleId);
+    console.log(`Found ${comments.length} comments for article ${articleId}`);
     res.json(comments);
   } catch (error) {
     console.error('Error getting comments:', error);
@@ -76,14 +78,18 @@ app.get('/api/comments/:articleId', async (req, res) => {
 // API endpoint to post comment
 app.post('/api/comments/:articleId', async (req, res) => {
   try {
+    console.log(`Posting comment for article: ${req.params.articleId}`);
+    console.log('Request body:', req.body);
     const { articleId } = req.params;
     const { author, content, email, website } = req.body;
 
     if (!author || !content) {
+      console.log('Missing required fields');
       return res.status(400).json({ error: 'Author and content are required' });
     }
 
     const comments = await readComments(articleId);
+    console.log(`Current comments count: ${comments.length}`);
 
     const newComment = {
       id: Date.now().toString(),
@@ -97,6 +103,7 @@ app.post('/api/comments/:articleId', async (req, res) => {
 
     comments.push(newComment);
     await writeComments(articleId, comments);
+    console.log(`Comment posted successfully, new count: ${comments.length}`);
 
     // Broadcast to all connected clients
     io.emit('newComment', { articleId, comment: newComment });
@@ -162,6 +169,17 @@ io.on('connection', (socket) => {
   });
 });
 
+// Add a simple health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Add a root endpoint to prevent 404 on root requests
+app.get('/', (req, res) => {
+  res.json({ message: 'VRA Comment Server API', endpoints: ['/api/comments/:articleId', '/health'] });
+});
+
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Health check available at: http://localhost:${PORT}/health`);
 });

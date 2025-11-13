@@ -19,6 +19,20 @@ A simple Express.js server for handling comments with YAML file storage.
 
 This server is designed to run on Railway with persistent file storage.
 
+### Environment Variables
+
+Set the following environment variables in your deployment platform:
+
+- `CORS_ORIGINS`: Comma-separated list of allowed origins (e.g., "https://vra-league.netlify.app,https://your-frontend-domain.com")
+- `PORT`: Port number (default: 8080)
+
+### Railway Deployment Steps
+
+1. Connect your GitHub repository to Railway
+2. Set environment variables in Railway dashboard
+3. Deploy the service
+4. Update your frontend to use the Railway URL instead of localhost
+
 ## Local Development
 
 ```bash
@@ -26,4 +40,4 @@ npm install
 npm start
 ```
 
-Server runs on port 8088 by default.
+Server runs on port 8080 by default.

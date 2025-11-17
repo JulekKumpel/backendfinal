@@ -119,16 +119,25 @@ app.post('/api/comments/:articleId', async (req, res) => {
     // Notify bot for moderation via webhook if configured
     const botUrl = process.env.BOT_ENDPOINT_URL;
     const botAuth = process.env.BOT_SHARED_SECRET;
+    console.log('BOT_ENDPOINT_URL:', botUrl);
+    console.log('BOT_SHARED_SECRET set:', !!botAuth);
     if (botUrl && botAuth) {
       try {
-        await fetch(botUrl.replace(/\/$/, '') + '/moderation/new', {
+        console.log('Notifying bot at:', botUrl.replace(/\/$/, '') + '/moderation/new');
+        const response = await fetch(botUrl.replace(/\/$/, '') + '/moderation/new', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${botAuth}` },
           body: JSON.stringify({ comment: { id: newComment.id, articleId, author: newComment.author, content: newComment.content, email: newComment.email, website: newComment.website, date: newComment.date } })
         });
+        console.log('Bot notification response status:', response.status);
+        if (!response.ok) {
+          console.error('Bot notification failed:', response.statusText);
+        }
       } catch (e) {
         console.error('Failed to notify bot for moderation:', e.message);
       }
+    } else {
+      console.log('Bot notification skipped: BOT_ENDPOINT_URL or BOT_SHARED_SECRET not set');
     }
 
     res.json({

@@ -41,7 +41,7 @@ async function startServer() {
   const PORT = process.env.PORT || 8080;
 
   // Initialize YAML-based storage
-  const dataDir = './data';
+  const dataDir = path.join(process.cwd(), 'vra-comment-server', 'data');
   const commentsFile = path.join(dataDir, 'comments.yaml');
 
   // Ensure data directory exists

@@ -6,46 +6,46 @@ import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Ensure fetch is available in all Node environments
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+// Fetch is built-in in Node 22+
 
-const app = express();
-const server = http.createServer(app);
-const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ["https://beautiful-vacherin-55c050.netlify.app/", "http://localhost:8082", "http://localhost:8083", "http://localhost:8084", "https://your-frontend-domain.com", "https://vra-league.netlify.app", "https://leafy-unicorn-9fee6f.netlify.app", "https://backendsite1-production.up.railway.app"];
+async function startServer() {
+  const app = express();
+  const server = http.createServer(app);
+  const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ["https://beautiful-vacherin-55c050.netlify.app/", "http://localhost:8082", "http://localhost:8083", "http://localhost:8084", "https://your-frontend-domain.com", "https://vra-league.netlify.app", "https://leafy-unicorn-9fee6f.netlify.app", "https://backendsite1-production.up.railway.app"];
 
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
-  }
-});
+  const io = new Server(server, {
+    cors: {
+      origin: allowedOrigins,
+      methods: ["GET", "POST", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+      credentials: true
+    }
+  });
 
-// Add CORS headers for all routes
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
-    res.header('Access-Control-Allow-Origin', origin || '*');
-  }
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
+  // Add CORS headers for all routes
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+      res.header('Access-Control-Allow-Origin', origin || '*');
+    }
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(200);
+    } else {
+      next();
+    }
+  });
 
-const PORT = process.env.PORT || 8080;
+  const PORT = process.env.PORT || 8080;
 
-// Initialize YAML-based storage
-const dataDir = './data';
-const commentsFile = path.join(dataDir, 'comments.yaml');
+  // Initialize YAML-based storage
+  const dataDir = './data';
+  const commentsFile = path.join(dataDir, 'comments.yaml');
 
-// Ensure data directory exists
-await fs.mkdir(dataDir, { recursive: true });
+  // Ensure data directory exists
+  await fs.mkdir(dataDir, { recursive: true });
 
 // Helper function to read comments from YAML
 async function readComments(articleId) {
@@ -248,7 +248,10 @@ app.get('/', (req, res) => {
 });
 
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Health check available at: http://localhost:${PORT}/health`);
-});
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Health check available at: http://localhost:${PORT}/health`);
+  });
+}
+
+startServer().catch(console.error);

@@ -2,6 +2,6 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "npm start"
-healthcheckPath = "/api/comments/1"
+startCommand = "cd vra-comment-server && npm start"
+healthcheckPath = "/health"
 restartPolicyType = "ON_FAILURE"
